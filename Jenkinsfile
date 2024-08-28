@@ -14,6 +14,17 @@ pipeline {
                 echo "Task: Run unit tests to ensure the code functions as expected and integration tests to ensure the different components work together as expected."
                 echo "Tool: JUnit (for unit tests) and JUnit with Spring Test (for integration tests)"
             }
+            post {
+                always {
+                    script {
+                        def stageStatus = currentBuild.currentResult
+                        echo "Simulating email notification for Unit and Integration Tests stage."
+                        echo "Subject: Unit and Integration Tests Stage: ${stageStatus}"
+                        echo "Body: The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details."
+                        echo "Attachments: Simulated logs from target/surefire-reports/"
+                    }
+                }
+            }
         }
 
         stage('Code Analysis') {
@@ -27,6 +38,17 @@ pipeline {
             steps {
                 echo "Task: Perform a security scan on the code to identify any vulnerabilities."
                 echo "Tool: OWASP Dependency-Check"
+            }
+            post {
+                always {
+                    script {
+                        def stageStatus = currentBuild.currentResult
+                        echo "Simulating email notification for Security Scan stage."
+                        echo "Subject: Security Scan Stage: ${stageStatus}"
+                        echo "Body: The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details."
+                        echo "Attachments: Simulated security scan report from target/dependency-check-report.html"
+                    }
+                }
             }
         }
 
@@ -53,26 +75,16 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                if (env.STAGE_NAME == 'Unit and Integration Tests' || env.STAGE_NAME == 'Security Scan') {
-                    def stageStatus = currentBuild.currentResult
-                    mail to: "ayesha.rana2604@gmail.com",
-                         subject: "${env.STAGE_NAME} Status: ${stageStatus}",
-                         body: "${env.STAGE_NAME} stage has completed with status: ${stageStatus}. Please check the Jenkins logs for details.",
-                         attachmentsPattern: '**/target/surefire-reports/*.xml, **/dependency-check-report.html'
-                }
-            }
-        }
         success {
-            mail to: "ayesha.rana2604@gmail.com",
-                 subject: "Pipeline Status: SUCCESS",
-                 body: "The pipeline completed successfully."
+            echo "Simulating email notification for successful pipeline completion."
+            echo "Subject: Pipeline Status: SUCCESS"
+            echo "Body: The pipeline completed successfully."
         }
+
         failure {
-            mail to: "ayesha.rana2604@gmail.com",
-                 subject: "Pipeline Status: FAILURE",
-                 body: "The pipeline failed. Please check the Jenkins logs for more details."
+            echo "Simulating email notification for failed pipeline."
+            echo "Subject: Pipeline Status: FAILURE"
+            echo "Body: The pipeline failed. Please check the Jenkins logs for more details."
         }
     }
 }
