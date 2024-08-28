@@ -4,24 +4,24 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "Task: Build the code using a build automation tool to compile and package the code."
-                echo "Tool: Maven"
+                echo "Building the code using Maven"
+                // Example build step
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
-                echo "Task: Run unit tests to ensure the code functions as expected and integration tests to ensure the different components work together as expected."
-                echo "Tool: JUnit (for unit tests) and JUnit with Spring Test (for integration tests)"
+                echo "Running Unit and Integration Tests"
+                // Example test step
             }
             post {
                 always {
                     script {
                         def stageStatus = currentBuild.currentResult
-                        echo "Simulating email notification for Unit and Integration Tests stage."
-                        echo "Subject: Unit and Integration Tests Stage: ${stageStatus}"
-                        echo "Body: The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details."
-                        echo "Attachments: Simulated logs from target/surefire-reports/"
+                        mail to: "ayesha.rana2604@gmail.com",
+                             subject: "Unit and Integration Tests Stage: ${stageStatus}",
+                             body: "The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
+                             attachmentsPattern: '**/target/surefire-reports/*.xml'
                     }
                 }
             }
@@ -29,24 +29,24 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                echo "Task: Perform static code analysis to ensure the code meets industry standards and best practices."
-                echo "Tool: SonarQube"
+                echo "Performing Code Analysis with SonarQube"
+                // Example code analysis step
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo "Task: Perform a security scan on the code to identify any vulnerabilities."
-                echo "Tool: OWASP Dependency-Check"
+                echo "Performing Security Scan with OWASP Dependency-Check"
+                // Example security scan step
             }
             post {
                 always {
                     script {
                         def stageStatus = currentBuild.currentResult
-                        echo "Simulating email notification for Security Scan stage."
-                        echo "Subject: Security Scan Stage: ${stageStatus}"
-                        echo "Body: The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details."
-                        echo "Attachments: Simulated security scan report from target/dependency-check-report.html"
+                        mail to: "ayesha.rana2604@gmail.com",
+                             subject: "Security Scan Stage: ${stageStatus}",
+                             body: "The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
+                             attachmentsPattern: '**/target/dependency-check-report.html'
                     }
                 }
             }
@@ -54,37 +54,37 @@ pipeline {
 
         stage('Deploy to Staging') {
             steps {
-                echo "Task: Deploy the application to a staging server."
-                echo "Tool: AWS CodeDeploy"
+                echo "Deploying to Staging Server"
+                // Example deploy step
             }
         }
 
         stage('Integration Tests on Staging') {
             steps {
-                echo "Task: Run integration tests on the staging environment to ensure the application functions as expected in a production-like environment."
-                echo "Tool: Selenium"
+                echo "Running Integration Tests on Staging"
+                // Example integration tests on staging step
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo "Task: Deploy the application to a production server."
-                echo "Tool: AWS CodeDeploy"
+                echo "Deploying to Production Server"
+                // Example deploy step
             }
         }
     }
 
     post {
         success {
-            echo "Simulating email notification for successful pipeline completion."
-            echo "Subject: Pipeline Status: SUCCESS"
-            echo "Body: The pipeline completed successfully."
+            mail to: "ayesha.rana2604@gmail.com",
+                 subject: "Pipeline Status: SUCCESS",
+                 body: "The pipeline completed successfully."
         }
 
         failure {
-            echo "Simulating email notification for failed pipeline."
-            echo "Subject: Pipeline Status: FAILURE"
-            echo "Body: The pipeline failed. Please check the Jenkins logs for more details."
+            mail to: "ayesha.rana2604@gmail.com",
+                 subject: "Pipeline Status: FAILURE",
+                 body: "The pipeline failed. Please check the Jenkins logs for more details."
         }
     }
 }
