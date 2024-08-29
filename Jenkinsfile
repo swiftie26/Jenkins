@@ -4,31 +4,24 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "Task: Build the code using a build automation tool to compile and package the code."
-                echo "Tool: Maven"
+                echo "Building the code using Maven"
+                // Example build step
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
-                echo "Task: Run unit tests to ensure the code functions as expected and integration tests to ensure the different components work together as expected."
-                echo "Tool: JUnit (for unit tests) and JUnit with Spring Test (for integration tests)"
+                echo "Running Unit and Integration Tests"
+                // Example test step
             }
             post {
                 always {
                     script {
-                        if (fileExists('target/surefire-reports')) {
-                            def stageStatus = currentBuild.currentResult
-                            emailext body: """${env.STAGE_NAME} stage has completed with status: ${stageStatus}.
-                                            Please check the attached logs for details.""",
-                                     subject: "${env.STAGE_NAME} Status: ${stageStatus}",
-                                     to: "ayesha.rana2604@gmail.com",
-                                     attachmentsPattern: '**/target/surefire-reports/*.xml',
-                                     mimeType: 'text/plain',
-                                     attachLog: true
-                        } else {
-                            echo "No test reports found. Skipping email notification for this stage."
-                        }
+                        def stageStatus = currentBuild.currentResult
+                        mail to: "ayesha.rana2604@gmail.com",
+                             subject: "Unit and Integration Tests Stage: ${stageStatus}",
+                             body: "The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
+                             attachmentsPattern: '*/target/surefire-reports/.xml'
                     }
                 }
             }
@@ -36,31 +29,24 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                echo "Task: Perform static code analysis to ensure the code meets industry standards and best practices."
-                echo "Tool: SonarQube"
+                echo "Performing Code Analysis with SonarQube"
+                // Example code analysis step
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo "Task: Perform a security scan on the code to identify any vulnerabilities."
-                echo "Tool: OWASP Dependency-Check"
+                echo "Performing Security Scan with OWASP Dependency-Check"
+                // Example security scan step
             }
             post {
                 always {
                     script {
-                        if (fileExists('target/dependency-check-report.html')) {
-                            def stageStatus = currentBuild.currentResult
-                            emailext body: """${env.STAGE_NAME} stage has completed with status: ${stageStatus}.
-                                            Please check the attached logs for details.""",
-                                     subject: "${env.STAGE_NAME} Status: ${stageStatus}",
-                                     to: "ayesha.rana2604@gmail.com",
-                                     attachmentsPattern: '**/target/dependency-check-report.html',
-                                     mimeType: 'text/plain',
-                                     attachLog: true
-                        } else {
-                            echo "No security scan report found. Skipping email notification for this stage."
-                        }
+                        def stageStatus = currentBuild.currentResult
+                        mail to: "ayesha.rana2604@gmail.com",
+                             subject: "Security Scan Stage: ${stageStatus}",
+                             body: "The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
+                             attachmentsPattern: '**/target/dependency-check-report.html'
                     }
                 }
             }
@@ -68,45 +54,37 @@ pipeline {
 
         stage('Deploy to Staging') {
             steps {
-                echo "Task: Deploy the application to a staging server."
-                echo "Tool: AWS CodeDeploy"
+                echo "Deploying to Staging Server"
+                // Example deploy step
             }
         }
 
         stage('Integration Tests on Staging') {
             steps {
-                echo "Task: Run integration tests on the staging environment to ensure the application functions as expected in a production-like environment."
-                echo "Tool: Selenium"
+                echo "Running Integration Tests on Staging"
+                // Example integration tests on staging step
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo "Task: Deploy the application to a production server."
-                echo "Tool: AWS CodeDeploy"
+                echo "Deploying to Production Server"
+                // Example deploy step
             }
         }
     }
 
     post {
-        always {
-            script {
-                emailext body: "The pipeline has completed. Please see the attached log for details.",
-                         subject: "Pipeline Status: ${currentBuild.currentResult}",
-                         to: "ayesha.rana2604@gmail.com",
-                         attachLog: true
-            }
-        }
         success {
-            emailext body: "The pipeline completed successfully.",
-                     subject: "Pipeline Status: SUCCESS",
-                     to: "ayesha.rana2604@gmail.com"
+            mail to: "ayesha.rana2604@gmail.com",
+                 subject: "Pipeline Status: SUCCESS",
+                 body: "The pipeline completed successfully."
         }
+
         failure {
-            emailext body: "The pipeline failed. Please check the Jenkins logs for more details.",
-                     subject: "Pipeline Status: FAILURE",
-                     to: "ayesha.rana2604@gmail.com",
-                     attachLog: true
+            mail to: "ayesha.rana2604@gmail.com",
+                 subject: "Pipeline Status: FAILURE",
+                 body: "The pipeline failed. Please check the Jenkins logs for more details."
         }
     }
 }
