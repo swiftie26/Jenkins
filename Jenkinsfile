@@ -17,15 +17,18 @@ pipeline {
             post {
                 always {
                     script {
-                        def stageStatus = currentBuild.currentResult
-                        def logContent = sh(script: 'cat target/surefire-reports/*.xml', returnStdout: true)
-                        emailext body: """${env.STAGE_NAME} stage has completed with status: ${stageStatus}.
-                                        Please check the attached logs for details.""",
-                                 subject: "${env.STAGE_NAME} Status: ${stageStatus}",
-                                 to: "ayesha.rana2604@gmail.com",
-                                 attachmentsPattern: '**/target/surefire-reports/*.xml',
-                                 mimeType: 'text/plain',
-                                 attachLog: true
+                        if (fileExists('target/surefire-reports')) {
+                            def stageStatus = currentBuild.currentResult
+                            emailext body: """${env.STAGE_NAME} stage has completed with status: ${stageStatus}.
+                                            Please check the attached logs for details.""",
+                                     subject: "${env.STAGE_NAME} Status: ${stageStatus}",
+                                     to: "ayesha.rana2604@gmail.com",
+                                     attachmentsPattern: '**/target/surefire-reports/*.xml',
+                                     mimeType: 'text/plain',
+                                     attachLog: true
+                        } else {
+                            echo "No test reports found. Skipping email notification for this stage."
+                        }
                     }
                 }
             }
@@ -46,15 +49,18 @@ pipeline {
             post {
                 always {
                     script {
-                        def stageStatus = currentBuild.currentResult
-                        def logContent = sh(script: 'cat target/dependency-check-report.html', returnStdout: true)
-                        emailext body: """${env.STAGE_NAME} stage has completed with status: ${stageStatus}.
-                                        Please check the attached logs for details.""",
-                                 subject: "${env.STAGE_NAME} Status: ${stageStatus}",
-                                 to: "ayesha.rana2604@gmail.com",
-                                 attachmentsPattern: '**/target/dependency-check-report.html',
-                                 mimeType: 'text/plain',
-                                 attachLog: true
+                        if (fileExists('target/dependency-check-report.html')) {
+                            def stageStatus = currentBuild.currentResult
+                            emailext body: """${env.STAGE_NAME} stage has completed with status: ${stageStatus}.
+                                            Please check the attached logs for details.""",
+                                     subject: "${env.STAGE_NAME} Status: ${stageStatus}",
+                                     to: "ayesha.rana2604@gmail.com",
+                                     attachmentsPattern: '**/target/dependency-check-report.html',
+                                     mimeType: 'text/plain',
+                                     attachLog: true
+                        } else {
+                            echo "No security scan report found. Skipping email notification for this stage."
+                        }
                     }
                 }
             }
