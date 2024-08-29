@@ -20,8 +20,8 @@ pipeline {
                         def stageStatus = currentBuild.currentResult
                         emailext to: "ayesha.rana2604@gmail.com",
                                  subject: "Unit and Integration Tests Stage: ${stageStatus}",
-                                 body: "The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
-                                 attachmentsPattern: '**/target/surefire-reports/*.xml',
+                                 body: "The Unit and Integration Tests stage has completed with status: ${stageStatus}. The full logs are attached.",
+                                 attachLog: true,
                                  mimeType: 'text/html'
                     }
                 }
@@ -46,8 +46,8 @@ pipeline {
                         def stageStatus = currentBuild.currentResult
                         emailext to: "ayesha.rana2604@gmail.com",
                                  subject: "Security Scan Stage: ${stageStatus}",
-                                 body: "The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
-                                 attachmentsPattern: '**/target/dependency-check-report.html',
+                                 body: "The Security Scan stage has completed with status: ${stageStatus}. The full logs are attached.",
+                                 attachLog: true,
                                  mimeType: 'text/html'
                     }
                 }
@@ -80,14 +80,16 @@ pipeline {
         success {
             emailext to: "ayesha.rana2604@gmail.com",
                      subject: "Pipeline Status: SUCCESS",
-                     body: "The pipeline completed successfully.",
+                     body: "The pipeline completed successfully. The full logs are attached.",
+                     attachLog: true,
                      mimeType: 'text/html'
         }
 
         failure {
             emailext to: "ayesha.rana2604@gmail.com",
                      subject: "Pipeline Status: FAILURE",
-                     body: "The pipeline failed. Please check the Jenkins logs for more details.",
+                     body: "The pipeline failed. Please check the attached logs for more details.",
+                     attachLog: true,
                      mimeType: 'text/html'
         }
     }
