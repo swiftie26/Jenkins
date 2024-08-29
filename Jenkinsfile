@@ -18,10 +18,11 @@ pipeline {
                 always {
                     script {
                         def stageStatus = currentBuild.currentResult
-                        mail to: "ayesha.rana2604@gmail.com",
-                             subject: "Unit and Integration Tests Stage: ${stageStatus}",
-                             body: "The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
-                             attachmentsPattern: '*/target/surefire-reports/.xml'
+                        emailext to: "ayesha.rana2604@gmail.com",
+                                 subject: "Unit and Integration Tests Stage: ${stageStatus}",
+                                 body: "The Unit and Integration Tests stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
+                                 attachmentsPattern: '**/target/surefire-reports/*.xml',
+                                 mimeType: 'text/html'
                     }
                 }
             }
@@ -43,10 +44,11 @@ pipeline {
                 always {
                     script {
                         def stageStatus = currentBuild.currentResult
-                        mail to: "ayesha.rana2604@gmail.com",
-                             subject: "Security Scan Stage: ${stageStatus}",
-                             body: "The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
-                             attachmentsPattern: '**/target/dependency-check-report.html'
+                        emailext to: "ayesha.rana2604@gmail.com",
+                                 subject: "Security Scan Stage: ${stageStatus}",
+                                 body: "The Security Scan stage has completed with status: ${stageStatus}. Please find the attached logs for details.",
+                                 attachmentsPattern: '**/target/dependency-check-report.html',
+                                 mimeType: 'text/html'
                     }
                 }
             }
@@ -76,15 +78,17 @@ pipeline {
 
     post {
         success {
-            mail to: "ayesha.rana2604@gmail.com",
-                 subject: "Pipeline Status: SUCCESS",
-                 body: "The pipeline completed successfully."
+            emailext to: "ayesha.rana2604@gmail.com",
+                     subject: "Pipeline Status: SUCCESS",
+                     body: "The pipeline completed successfully.",
+                     mimeType: 'text/html'
         }
 
         failure {
-            mail to: "ayesha.rana2604@gmail.com",
-                 subject: "Pipeline Status: FAILURE",
-                 body: "The pipeline failed. Please check the Jenkins logs for more details."
+            emailext to: "ayesha.rana2604@gmail.com",
+                     subject: "Pipeline Status: FAILURE",
+                     body: "The pipeline failed. Please check the Jenkins logs for more details.",
+                     mimeType: 'text/html'
         }
     }
 }
